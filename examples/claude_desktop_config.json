@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "edgar-events": {
+      "command": "uvx",
+      "args": ["edgar-events-mcp"],
+      "env": {
+        "EDGAR_EVENTS_API_KEY": "your-key-from-edgarevents.com-or-omit-for-the-free-tool"
+      }
+    }
+  }
+}
