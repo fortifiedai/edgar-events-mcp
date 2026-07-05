@@ -12,6 +12,7 @@ from edgar_events_mcp.client import (
     AuthRequiredError,
     Client,
     DEFAULT_BASE_URL,
+    RateLimitedError,
 )
 
 
@@ -33,7 +34,12 @@ def test_paid_call_without_key_raises_auth():
     reason="set EDGAR_EVENTS_LIVE=1 to hit the public API",
 )
 def test_try_activist_stakes_live():
-    data = Client().try_activist_stakes()
+    try:
+        data = Client().try_activist_stakes()
+    except RateLimitedError:
+        # The no-key sample is per-IP rate limited by design; a throttled run
+        # (shared IP / CI) is not a client defect, so skip rather than fail.
+        pytest.skip("free sample rate limited (HTTP 429); rerun from a fresh IP")
     assert data["sample"] is True
     assert isinstance(data["events"], list)
     if data["events"]:
